@@ -28,8 +28,8 @@ class _HomePageState extends State<HomePage> {
                   padding: WidgetStatePropertyAll(
                       EdgeInsets.symmetric(horizontal: 50))),
               onPressed: () async {
-                await GoogleAiServices.textGeneration();
-                //  Navigator.of(context).pushNamed(RouteNames.assistantPage);
+                
+                 Navigator.of(context).pushNamed(RouteNames.assistantPage);
               },
               child: Text(
                 TextConstant.homePageButtonText,

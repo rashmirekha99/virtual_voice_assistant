@@ -16,7 +16,7 @@ class RightBubble extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.8,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-              color: ColorPalette.secondaryWhite,
+              color: ColorPalette.rightBubbleColor,
               borderRadius: BorderRadius.circular(20)
                   .copyWith(topRight: const Radius.circular(0)),
               border: Border.all(color: ColorPalette.shadowColor)),
