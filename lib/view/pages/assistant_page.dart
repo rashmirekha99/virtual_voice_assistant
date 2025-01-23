@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:voice_assistant/core/constant/image_constant.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
 import 'package:voice_assistant/core/theme/color_palette.dart';
+import 'package:voice_assistant/view/widgets/right_bubble.dart';
+import 'package:voice_assistant/view/widgets/left_bubble.dart';
 
 class AssistantPage extends StatefulWidget {
   const AssistantPage({super.key});
@@ -21,47 +23,12 @@ class _AssistantPageState extends State<AssistantPage> {
       body: Column(
         spacing: 15,
         children: [
-          Row(
-            children: [
-              Container(
-                  height: 50,
-                  width: 50,
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.amber),
-                  child: Image.asset(ImageConstant.botImage)),
-              //chat bubble
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: ColorPalette.secondaryWhite,
-                    borderRadius: BorderRadius.circular(20)
-                        .copyWith(topLeft: const Radius.circular(0)),
-                    border: Border.all(color: ColorPalette.shadowColor)),
-                child: const Text(TextConstant.initialBotMsg),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              //chat bubble
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: ColorPalette.secondaryWhite,
-                    borderRadius: BorderRadius.circular(20)
-                        .copyWith(topLeft: const Radius.circular(0)),
-                    border: Border.all(color: ColorPalette.shadowColor)),
-                child: const Text(TextConstant.initialBotMsg),
-              ),
-              Container(
-                  height: 50,
-                  width: 50,
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.amber),
-                  child: Image.asset(ImageConstant.botImage)),
-            ],
-          )
+          LeftBubble(msg: TextConstant.initialBotMsg),
+          RightBubble(msg: 'What is the sum of hdhc?'),
+          LeftBubble(msg: TextConstant.initialBotMsg),
+          RightBubble(
+              msg:
+                  'What is the sum of hdhc?What is the sum of hdhc?What is the sum of hdhc?What is the sum of hdhc?What is the sum of hdhc?What is the sum of hdhc?What is the sum of hdhc?What is the sum of hdhc?')
         ],
       ),
       floatingActionButton: _floatingActionButton,
@@ -69,7 +36,6 @@ class _AssistantPageState extends State<AssistantPage> {
   }
 
   Widget get _floatingActionButton => FloatingActionButton(
-    
         onPressed: () {},
         child: const Icon(Icons.mic),
       );
