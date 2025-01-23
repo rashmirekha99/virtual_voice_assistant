@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:voice_assistant/core/theme/theme.dart';
+import 'package:voice_assistant/routes/route_names.dart';
+import 'package:voice_assistant/routes/routes.dart';
+import 'package:voice_assistant/view/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,26 +18,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: AppTheme.lightTheme,
+      debugShowCheckedModeBanner: false,
+      home: const HomePage(),
+      routes: routes,
     );
   }
 }
@@ -76,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Each time to start a speech recognition session
   Future<void> _startListening() async {
     await _speechToText.listen(onResult: _onSpeechResult);
+
     setState(() {});
   }
 
@@ -85,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// listen method.
   Future<void> _stopListening() async {
     await _speechToText.stop();
+    _speechEnabled = false;
     setState(() {});
   }
 
@@ -93,17 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       _lastWords = result.recognizedWords;
-    });
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _speechEnabled = true;
     });
   }
 
