@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:voice_assistant/core/constant/image_constant.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
+import 'package:voice_assistant/core/secrets.dart';
 import 'package:voice_assistant/routes/route_names.dart';
+import 'package:voice_assistant/services/api_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,8 +27,9 @@ class _HomePageState extends State<HomePage> {
               style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(
                       EdgeInsets.symmetric(horizontal: 50))),
-              onPressed: () {
-                Navigator.of(context).pushNamed(RouteNames.assistantPage);
+              onPressed: () async {
+                await GoogleAiServices.textGeneration();
+                //  Navigator.of(context).pushNamed(RouteNames.assistantPage);
               },
               child: Text(
                 TextConstant.homePageButtonText,
