@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
+import 'package:voice_assistant/providers/chat_provider.dart';
+import 'package:voice_assistant/providers/mic_provider.dart';
+import 'package:voice_assistant/providers/speech_to_text_provider.dart';
 
 import 'package:voice_assistant/viewmodel/assistant_view_model.dart';
 
@@ -12,10 +15,11 @@ class AssistantPage extends StatefulWidget {
 }
 
 class _AssistantPageState extends State<AssistantPage> {
+  
   @override
   void initState() {
     super.initState();
-    context.read<AssistantViewModel>().initSpeech();
+    context.read<SpeechToTextProvider>().initSpeech();
   }
 
   @override
@@ -26,7 +30,7 @@ class _AssistantPageState extends State<AssistantPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Consumer<AssistantViewModel>(builder: (context, value, child) {
+        child: Consumer<ChatProvider>(builder: (context, value, child) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 15),
             child: Column(spacing: 15, children: value.chatBubbleList),
@@ -37,15 +41,10 @@ class _AssistantPageState extends State<AssistantPage> {
     );
   }
 
-  Widget get _floatingActionButton => Consumer(
-        builder: (context, value, child) {
-          return FloatingActionButton(
-              onPressed: () {
-                context.read<AssistantViewModel>().onMic();
-              },
-              child: Icon(context.watch<AssistantViewModel>().micOn
-                  ? Icons.bar_chart
-                  : Icons.mic));
-        },
-      );
+  Widget get _floatingActionButton => FloatingActionButton(
+      onPressed: () {
+        context.read<AssistantViewModel>().onMic();
+      },
+      child: Icon(
+          context.watch<MicProvider>().micOn ? Icons.bar_chart : Icons.mic));
 }
