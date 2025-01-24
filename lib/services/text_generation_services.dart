@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:voice_assistant/core/api/apis.dart';
 import 'package:voice_assistant/core/secrets.dart';
 
-class GoogleAiServices {
+class TextGenerationServices {
   static Future<String> textGeneration(String prompt) async {
     try {
-      final res = await http.post(Uri.parse(APIS.GoogleAiAPI),
+      final res = await http.post(Uri.parse(APIS.googleAiAPI),
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $huggingFaceApiKey"
@@ -30,6 +30,7 @@ class GoogleAiServices {
     }
   }
 
-  static void dalle() {}
+  
+
   static void chatGptText() {}
 }

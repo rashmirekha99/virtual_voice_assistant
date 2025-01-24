@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
-import 'package:voice_assistant/services/api_services.dart';
+import 'package:voice_assistant/services/image_generation_services.dart';
+import 'package:voice_assistant/services/text_generation_services.dart';
+import 'package:voice_assistant/view/widgets/image_bubble.dart';
 import 'package:voice_assistant/view/widgets/left_bubble.dart';
 import 'package:voice_assistant/view/widgets/right_bubble.dart';
 
@@ -11,6 +15,7 @@ class AssistantViewModel extends ChangeNotifier {
   SpeechToText _speechToText = SpeechToText();
   String _lastWords = '';
   String _response = '';
+  String _imagePath = '';
   bool _micOn = false;
   List<Widget> _chatBubbleList = [
     LeftBubble(msg: TextConstant.initialBotMsg),
@@ -18,6 +23,7 @@ class AssistantViewModel extends ChangeNotifier {
   SpeechToText get speechToText => _speechToText;
   String get lastWords => _lastWords;
   String get response => _response;
+  String get imagePath => _imagePath;
   bool get micOn => _micOn;
   List<Widget> get chatBubbleList => _chatBubbleList;
 
@@ -85,8 +91,11 @@ class AssistantViewModel extends ChangeNotifier {
       _setMic(false);
       notifyListeners();
       await stopListening();
-      _response = await GoogleAiServices.textGeneration(_lastWords);
-      
+      // _response = await TextGenerationServices.textGeneration(_lastWords);
+      final image = await ImageGenerationServices.imageGeneration(_lastWords);
+
+      addChats(ImageBubble(path: image));
+
       clearLastWord();
       if (_response != '') {
         _systemSpeak(response);
