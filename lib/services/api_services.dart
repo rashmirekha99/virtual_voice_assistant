@@ -6,7 +6,6 @@ import 'package:voice_assistant/core/secrets.dart';
 
 class GoogleAiServices {
   static Future<String> textGeneration(String prompt) async {
-    print('inside chatgpt');
     try {
       final res = await http.post(Uri.parse(APIS.GoogleAiAPI),
           headers: {
@@ -22,10 +21,11 @@ class GoogleAiServices {
             "stream": false
           }));
       final response = jsonDecode(res.body);
-      print(response['choices'][0]['message']['content']);
-      return response['choices'][0]['message']['content'];
+      String answer = response['choices'][0]['message']['content'];
+      answer = answer.replaceAll('*', '');
+
+      return answer;
     } catch (e) {
-      print(e.toString());
       return '';
     }
   }

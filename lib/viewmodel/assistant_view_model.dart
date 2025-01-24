@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
@@ -19,6 +20,16 @@ class AssistantViewModel extends ChangeNotifier {
   String get response => _response;
   bool get micOn => _micOn;
   List<Widget> get chatBubbleList => _chatBubbleList;
+
+  FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _systemSpeak(String response) async {
+    await flutterTts.speak(response);
+  }
+
+  Future<void> _stopSpeak() async {
+    await flutterTts.stop();
+  }
 
   void addChats(Widget bubble) {
     _chatBubbleList.add(bubble);
@@ -49,21 +60,25 @@ class AssistantViewModel extends ChangeNotifier {
   }
 
   Future<void> stopListening() async {
-    addChats(RightBubble(msg: _lastWords));
+    if (_lastWords.isNotEmpty) {
+      addChats(RightBubble(msg: _lastWords));
+    }
+
     await _speechToText.stop();
-    print('Stopped Listening');
+
     notifyListeners();
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
     _lastWords = result.recognizedWords;
-    print(_lastWords);
+
     notifyListeners();
   }
 
   void onMic() async {
     if (_speechToText.isNotListening && _lastWords.isEmpty) {
       _setMic(true);
+      _stopSpeak();
       notifyListeners();
       await startListening();
     } else {
@@ -71,8 +86,10 @@ class AssistantViewModel extends ChangeNotifier {
       notifyListeners();
       await stopListening();
       _response = await GoogleAiServices.textGeneration(_lastWords);
+      
       clearLastWord();
       if (_response != '') {
+        _systemSpeak(response);
         addChats(LeftBubble(msg: _response));
       }
     }
@@ -82,5 +99,6 @@ class AssistantViewModel extends ChangeNotifier {
   void dispose() {
     super.dispose();
     _speechToText.stop();
+    flutterTts.stop();
   }
 }
