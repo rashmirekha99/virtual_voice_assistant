@@ -93,8 +93,10 @@ class AssistantViewModel extends ChangeNotifier {
       await stopListening();
       // _response = await TextGenerationServices.textGeneration(_lastWords);
       final image = await ImageGenerationServices.imageGeneration(_lastWords);
-
-      addChats(ImageBubble(path: image));
+      if (image.isNotEmpty) {
+        addChats(ImageBubble(path: image));
+        _systemSpeak('Here is a image of $_lastWords');
+      }
 
       clearLastWord();
       if (_response != '') {
