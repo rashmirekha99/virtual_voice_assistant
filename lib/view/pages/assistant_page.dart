@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
+
 import 'package:voice_assistant/viewmodel/assistant_view_model.dart';
 
 class AssistantPage extends StatefulWidget {
@@ -17,7 +18,6 @@ class _AssistantPageState extends State<AssistantPage> {
     context.read<AssistantViewModel>().initSpeech();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +27,10 @@ class _AssistantPageState extends State<AssistantPage> {
       ),
       body: SingleChildScrollView(
         child: Consumer<AssistantViewModel>(builder: (context, value, child) {
-          return Column(spacing: 15, children: value.chatBubbleList);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: Column(spacing: 15, children: value.chatBubbleList),
+          );
         }),
       ),
       floatingActionButton: _floatingActionButton,

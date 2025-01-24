@@ -25,6 +25,11 @@ class AssistantViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearLastWord() {
+    _lastWords = '';
+    notifyListeners();
+  }
+
   void _setMic(bool status) {
     _micOn = status;
     notifyListeners();
@@ -57,19 +62,16 @@ class AssistantViewModel extends ChangeNotifier {
   }
 
   void onMic() async {
-    if (_speechToText.isNotListening) {
-      print('inside 1');
+    if (_speechToText.isNotListening && _lastWords.isEmpty) {
       _setMic(true);
-
       notifyListeners();
       await startListening();
     } else {
       _setMic(false);
-
       notifyListeners();
-      print('inside 2');
       await stopListening();
       _response = await GoogleAiServices.textGeneration(_lastWords);
+      clearLastWord();
       if (_response != '') {
         addChats(LeftBubble(msg: _response));
       }
