@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-class SpeechToTextProvider extends ChangeNotifier{
-SpeechToText _speechToText = SpeechToText();
-String _lastWords = '';
-SpeechToText get speechToText => _speechToText;
+class SpeechToTextProvider extends ChangeNotifier {
+  SpeechToText _speechToText = SpeechToText();
+  String _lastWords = '';
+  SpeechToText get speechToText => _speechToText;
   String get lastWords => _lastWords;
 
   void clearLastWord() {
@@ -27,8 +27,6 @@ SpeechToText get speechToText => _speechToText;
   }
 
   Future<void> stopListening() async {
-    
-
     await _speechToText.stop();
 
     notifyListeners();
@@ -42,9 +40,7 @@ SpeechToText get speechToText => _speechToText;
 
   @override
   void dispose() {
- 
     super.dispose();
     _speechToText.stop();
   }
-
 }
