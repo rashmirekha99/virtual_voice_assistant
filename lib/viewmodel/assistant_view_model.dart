@@ -14,7 +14,7 @@ class AssistantViewModel extends ChangeNotifier {
   List<Widget> _chatBubbleList = [
     LeftBubble(msg: TextConstant.initialBotMsg),
   ];
-
+  SpeechToText get speechToText => _speechToText;
   String get lastWords => _lastWords;
   String get response => _response;
   bool get micOn => _micOn;
@@ -37,45 +37,41 @@ class AssistantViewModel extends ChangeNotifier {
   }
 
   /// Each time to start a speech recognition session
-  Future<void> _startListening() async {
-    _setMic(true);
+  Future<void> startListening() async {
     await _speechToText.listen(onResult: _onSpeechResult);
 
     notifyListeners();
   }
 
-  /// Manually stop the active speech recognition session
-  /// Note that there are also timeouts that each platform enforces
-  /// and the SpeechToText plugin supports setting timeouts on the
-  /// listen method.
-  Future<void> _stopListening() async {
+  Future<void> stopListening() async {
     addChats(RightBubble(msg: _lastWords));
     await _speechToText.stop();
-    _setMic(false);
-
+    print('Stopped Listening');
     notifyListeners();
   }
 
-  /// This is the callback that the SpeechToText plugin calls when
-  /// the platform returns recognized words.
   void _onSpeechResult(SpeechRecognitionResult result) {
     _lastWords = result.recognizedWords;
+    print(_lastWords);
     notifyListeners();
   }
 
   void onMic() async {
-    // print('listening ${_speechToText.isListening}');
-    if (await _speechToText.hasPermission && _speechToText.isNotListening) {
+    if (_speechToText.isNotListening) {
       print('inside 1');
+      _setMic(true);
 
-      await _startListening();
+      notifyListeners();
+      await startListening();
     } else {
+      _setMic(false);
+
+      notifyListeners();
       print('inside 2');
-      _chatBubbleList.add(LeftBubble(msg: _lastWords));
-      await _stopListening();
+      await stopListening();
       _response = await GoogleAiServices.textGeneration(_lastWords);
-      if (response != '') {
-        _chatBubbleList.add(RightBubble(msg: _response));
+      if (_response != '') {
+        addChats(LeftBubble(msg: _response));
       }
     }
   }

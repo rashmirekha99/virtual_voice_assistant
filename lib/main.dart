@@ -4,6 +4,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/core/theme/theme.dart';
 import 'package:voice_assistant/routes/routes.dart';
+import 'package:voice_assistant/view/pages/assistant_page.dart';
 import 'package:voice_assistant/view/pages/home_page.dart';
 import 'package:voice_assistant/viewmodel/assistant_view_model.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: AssistantPage(),
       routes: routes,
     );
   }
@@ -48,7 +49,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
   SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
@@ -86,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       _lastWords = result.recognizedWords;
+      print(_lastWords);
       _speechEnabled = true;
     });
   }
@@ -110,7 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               _lastWords,
             ),
-            
           ],
         ),
       ),

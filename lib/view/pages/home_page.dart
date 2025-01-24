@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voice_assistant/core/constant/image_constant.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
-import 'package:voice_assistant/core/secrets.dart';
 import 'package:voice_assistant/routes/route_names.dart';
-import 'package:voice_assistant/services/api_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
