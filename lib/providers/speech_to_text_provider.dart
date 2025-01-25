@@ -34,6 +34,7 @@ class SpeechToTextProvider extends ChangeNotifier {
 
   void _onSpeechResult(SpeechRecognitionResult result) {
     _lastWords = result.recognizedWords;
+    print('_lastWords $_lastWords');
 
     notifyListeners();
   }

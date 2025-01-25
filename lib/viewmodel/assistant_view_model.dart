@@ -29,6 +29,7 @@ class AssistantViewModel {
     print('textType $textType');
     if (textType.trim().toLowerCase() == 'yes') {
       imagePath = await ImageGenerationServices.imageGeneration(prompt);
+      print(imagePath);
     } else {
       response = await TextGenerationServices.textGeneration(prompt);
     }
@@ -56,8 +57,11 @@ class AssistantViewModel {
       chatProvider.addChats(LeftBubble(msg: response));
       _clearResponse();
     }
+    
     speechToTextProvider.clearLastWord();
   }
+
+  
 
 //on pressed mic
   void onMic() async {
