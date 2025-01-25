@@ -57,8 +57,11 @@ class AssistantViewModel {
       chatProvider.addChats(LeftBubble(msg: response));
       _clearResponse();
     }
+    
     speechToTextProvider.clearLastWord();
   }
+
+  
 
 //on pressed mic
   void onMic() async {

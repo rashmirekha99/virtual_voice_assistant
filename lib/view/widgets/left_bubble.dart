@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:voice_assistant/core/constant/image_constant.dart';
 import 'package:voice_assistant/core/theme/color_palette.dart';
@@ -8,28 +9,33 @@ class LeftBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-            height: 50,
-            width: 50,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+    return SlideInLeft(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                height: 50,
+                width: 50,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: Image.asset(ImageConstant.botImage)),
+            //chat bubble
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: ColorPalette.secondaryWhite,
+                  borderRadius: BorderRadius.circular(20)
+                      .copyWith(topLeft: const Radius.circular(0)),
+                  border: Border.all(color: ColorPalette.shadowColor)),
+              child: Text(msg),
             ),
-            child: Image.asset(ImageConstant.botImage)),
-        //chat bubble
-        Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              color: ColorPalette.secondaryWhite,
-              borderRadius: BorderRadius.circular(20)
-                  .copyWith(topLeft: const Radius.circular(0)),
-              border: Border.all(color: ColorPalette.shadowColor)),
-          child: Text(msg),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

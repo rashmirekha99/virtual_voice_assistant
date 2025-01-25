@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_assistant/core/constant/text_constant.dart';
+import 'package:voice_assistant/core/utils/scroll_to_bottom.dart';
 import 'package:voice_assistant/providers/chat_provider.dart';
 import 'package:voice_assistant/providers/mic_provider.dart';
 import 'package:voice_assistant/providers/speech_to_text_provider.dart';
@@ -30,14 +31,21 @@ class _AssistantPageState extends State<AssistantPage> {
         title: const Text(TextConstant.appBarTitle),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Consumer<ChatProvider>(builder: (context, value, child) {
-          return Padding(
+      body: Consumer<ChatProvider>(builder: (context, value, child) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Padding(
             padding: const EdgeInsets.only(bottom: 15),
-            child: Column(spacing: 15, children: value.chatBubbleList),
-          );
-        }),
-      ),
+            child: SingleChildScrollView(
+              controller: value.chatScrollController,
+              child: Column(
+                children: value.chatBubbleList,
+              ),
+            ),
+          ),
+        );
+      }),
       floatingActionButton: _floatingActionButton,
     );
   }
