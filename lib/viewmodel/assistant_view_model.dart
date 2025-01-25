@@ -1,115 +1,75 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-import 'package:voice_assistant/core/constant/text_constant.dart';
+import 'package:voice_assistant/providers/chat_provider.dart';
+import 'package:voice_assistant/providers/mic_provider.dart';
+import 'package:voice_assistant/providers/speech_to_text_provider.dart';
+import 'package:voice_assistant/providers/text_to_speech_provider.dart';
 import 'package:voice_assistant/services/image_generation_services.dart';
 import 'package:voice_assistant/services/text_generation_services.dart';
 import 'package:voice_assistant/view/widgets/image_bubble.dart';
 import 'package:voice_assistant/view/widgets/left_bubble.dart';
 import 'package:voice_assistant/view/widgets/right_bubble.dart';
 
-class AssistantViewModel extends ChangeNotifier {
-  SpeechToText _speechToText = SpeechToText();
-  String _lastWords = '';
-  String _response = '';
-  String _imagePath = '';
-  bool _micOn = false;
-  List<Widget> _chatBubbleList = [
-    LeftBubble(msg: TextConstant.initialBotMsg),
-  ];
-  SpeechToText get speechToText => _speechToText;
-  String get lastWords => _lastWords;
-  String get response => _response;
-  String get imagePath => _imagePath;
-  bool get micOn => _micOn;
-  List<Widget> get chatBubbleList => _chatBubbleList;
+class AssistantViewModel {
+  final MicProvider micProvider;
+  final ChatProvider chatProvider;
+  final SpeechToTextProvider speechToTextProvider;
+  final TextToSpeechProvider textToSpeechProvider;
 
-  FlutterTts flutterTts = FlutterTts();
-
-  Future<void> _systemSpeak(String response) async {
-    await flutterTts.speak(response);
-  }
-
-  Future<void> _stopSpeak() async {
-    await flutterTts.stop();
-  }
-
-  void addChats(Widget bubble) {
-    _chatBubbleList.add(bubble);
-    notifyListeners();
-  }
-
-  void clearLastWord() {
-    _lastWords = '';
-    notifyListeners();
-  }
-
-  void _setMic(bool status) {
-    _micOn = status;
-    notifyListeners();
-  }
-
-  /// This has to happen only once per app
-  Future<void> initSpeech() async {
-    await _speechToText.initialize();
-    notifyListeners();
-  }
-
-  /// Each time to start a speech recognition session
-  Future<void> startListening() async {
-    await _speechToText.listen(onResult: _onSpeechResult);
-
-    notifyListeners();
-  }
-
-  Future<void> stopListening() async {
-    if (_lastWords.isNotEmpty) {
-      addChats(RightBubble(msg: _lastWords));
-    }
-
-    await _speechToText.stop();
-
-    notifyListeners();
-  }
-
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    _lastWords = result.recognizedWords;
-
-    notifyListeners();
-  }
-
-  void onMic() async {
-    if (_speechToText.isNotListening && _lastWords.isEmpty) {
-      _setMic(true);
-      _stopSpeak();
-      notifyListeners();
-      await startListening();
+  AssistantViewModel({
+    required this.micProvider,
+    required this.chatProvider,
+    required this.speechToTextProvider,
+    required this.textToSpeechProvider,
+  });
+  String response = '';
+  String imagePath = '';
+//image or text generation
+  Future<void> _generateContentBasedOnPrompt(String prompt) async {
+    final textType = await TextGenerationServices.textGeneration(
+        'Is this prompt about generating an image. Answer in yes or no $prompt');
+    print('textType $textType');
+    if (textType.trim().toLowerCase() == 'yes') {
+      imagePath = await ImageGenerationServices.imageGeneration(prompt);
     } else {
-      _setMic(false);
-      notifyListeners();
-      await stopListening();
-      // _response = await TextGenerationServices.textGeneration(_lastWords);
-      final image = await ImageGenerationServices.imageGeneration(_lastWords);
-      if (image.isNotEmpty) {
-        addChats(ImageBubble(path: image));
-        _systemSpeak('Here is a image of $_lastWords');
-      }
-
-      clearLastWord();
-      if (_response != '') {
-        _systemSpeak(response);
-        addChats(LeftBubble(msg: _response));
-      }
+      response = await TextGenerationServices.textGeneration(prompt);
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _speechToText.stop();
-    flutterTts.stop();
+  Future<void> _listenToMic() async {
+    micProvider.setMic(true);
+    textToSpeechProvider.stopSpeak();
+    await speechToTextProvider.startListening();
+  }
+
+  Future<void> _endOfListenToMic() async {
+    micProvider.setMic(false);
+    if (speechToTextProvider.lastWords.isNotEmpty) {
+      chatProvider.addChats(RightBubble(msg: speechToTextProvider.lastWords));
+    }
+    await speechToTextProvider.stopListening();
+    await _generateContentBasedOnPrompt(speechToTextProvider.lastWords);
+    if (imagePath.isNotEmpty) {
+      chatProvider.addChats(ImageBubble(path: imagePath));
+      textToSpeechProvider
+          .systemSpeak('Here is a image of ${speechToTextProvider.lastWords}');
+    } else if (response.isNotEmpty) {
+      textToSpeechProvider.systemSpeak(response);
+      chatProvider.addChats(LeftBubble(msg: response));
+      _clearResponse();
+    }
+    speechToTextProvider.clearLastWord();
+  }
+
+//on pressed mic
+  void onMic() async {
+    if (speechToTextProvider.speechToText.isNotListening &&
+        speechToTextProvider.lastWords.isEmpty) {
+      await _listenToMic();
+    } else {
+      await _endOfListenToMic();
+    }
+  }
+
+  void _clearResponse() {
+    response = '';
   }
 }
