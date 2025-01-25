@@ -29,6 +29,7 @@ class AssistantViewModel {
     print('textType $textType');
     if (textType.trim().toLowerCase() == 'yes') {
       imagePath = await ImageGenerationServices.imageGeneration(prompt);
+      print(imagePath);
     } else {
       response = await TextGenerationServices.textGeneration(prompt);
     }

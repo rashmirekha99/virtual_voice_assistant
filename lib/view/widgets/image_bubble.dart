@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:voice_assistant/core/constant/image_constant.dart';
-import 'package:voice_assistant/core/theme/color_palette.dart';
 
 class ImageBubble extends StatelessWidget {
   const ImageBubble({super.key, required this.path});
@@ -23,7 +22,7 @@ class ImageBubble extends StatelessWidget {
         //chat bubble
         Column(
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20)

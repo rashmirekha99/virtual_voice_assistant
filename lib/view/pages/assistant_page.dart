@@ -4,6 +4,7 @@ import 'package:voice_assistant/core/constant/text_constant.dart';
 import 'package:voice_assistant/providers/chat_provider.dart';
 import 'package:voice_assistant/providers/mic_provider.dart';
 import 'package:voice_assistant/providers/speech_to_text_provider.dart';
+import 'package:voice_assistant/providers/text_to_speech_provider.dart';
 
 import 'package:voice_assistant/viewmodel/assistant_view_model.dart';
 
@@ -15,11 +16,11 @@ class AssistantPage extends StatefulWidget {
 }
 
 class _AssistantPageState extends State<AssistantPage> {
-  
   @override
   void initState() {
     super.initState();
     context.read<SpeechToTextProvider>().initSpeech();
+    context.read<TextToSpeechProvider>().systemSpeak();
   }
 
   @override
